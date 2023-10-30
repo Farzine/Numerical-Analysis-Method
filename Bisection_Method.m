@@ -1,40 +1,47 @@
-disp("Bisection Method: ");
-
-% Define x as a symbolic variable
-system x:x^
+% Define your target equation as a function
+f = @(x) x^3 - 4*x - 9;
 
 % Initialize variables
-y = input('Enter the non-linear equation as a function of x: ', 's'); % Note: 's' reads the input as a string
-a = input('Enter the first guess (a): ');
-b = input('Enter the second guess (b): ');
-e = input('Tolerance (e): ');
+a = 2;  % Lower bound
+b = 3;  % Upper bound
+tolerance = 1e-6;  % Tolerance
+maxIterations = 100;  % Maximum number of iterations
 
-% Convert the input string 'y' into a symbolic expression
-y = system(y);
+% Initialize variables to store results
+roots = [];
+iterations = [];
 
-% Functional value
-fa = subs(y, x, a);
-fb = subs(y, x, b);
-
-% Bisection Method
-if fa * fb > 0
-    disp('Initial values do not include the root: f(a) and f(b) do not have opposite signs.');
-else
+for i = 1:maxIterations
     c = (a + b) / 2;
-    fc = subs(y, x, c);
-    fprintf('\n\na\t\tb\t\tc\t\tf(c)\n');
-
-    while abs(fc) > e
-        fprintf('%f\t%f\t%f\t%f\n', a, b, c, fc);
-        if fa * fc < 0
-            b = c;
-        else
-            a = c;
-        end
-        c = (a + b) / 2;
-        fc = subs(y, x, c);
+    fa = f(a);
+    fb = f(b);
+    fc = f(c);
+    
+    roots = [roots; c];
+    iterations = [iterations; i];
+    
+    if abs(fc) < tolerance
+        break;
     end
-
-    fprintf('\nRoot is: %f\n', c);
+    
+    if fa * fc < 0
+        b = c;
+    else
+        a = c;
+    end
 end
 
+% Print the result
+fprintf('Root: %.6f\n', c);
+
+% Plot the equation with the matrix of root
+x = linspace(0, 4, 1000);
+y = f(x);
+
+figure;
+plot(x, y, 'b', roots, f(roots), 'ro');
+title('Bisection Method');
+xlabel('x');
+ylabel('f(x)');
+grid on;
+legend('f(x)', 'Roots');
