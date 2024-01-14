@@ -1,16 +1,18 @@
 #include<iostream>
+#include<conio.h>
+
 using namespace std;
 
 int main()
 {
-	 float x[100], y[100], ip_x, ip_y=0, iteration_product;
-	 int n;
+	 float x[100], y[100], xp, yp=0, p;
+	 int i,j,n;
 
 	 /* Input Section */
 	 cout<<"Enter number of data: ";
 	 cin>>n;
 	 cout<<"Enter data:"<< endl;
-	 for(int i=1;i<=n;i++)
+	 for(i=1;i<=n;i++)
 	 {
 		  cout<<"x["<< i<<"] = ";
 		  cin>>x[i];
@@ -18,26 +20,22 @@ int main()
 		  cin>>y[i];
 	 }
 	 cout<<"Enter interpolation point: ";
-	 cin>>ip_x;
+	 cin>>xp;
 
-	 /* Implementing of Lagrange Interpolation */
-	 for(int i=1;i<=n;i++)
+	 /* Implementing Lagrange Interpolation */
+	 for(i=1;i<=n;i++)
 	 {
-		// Reset product value of each iteration  
-		  iteration_product=1;
-		  for(int j=1;j<=n;j++)
+		  p=1;
+		  for(j=1;j<=n;j++)
 		  {
 			   if(i!=j)
 			   {
-					cout << "(x - " << x[j] << ") / (" << x[i] << " - " << x[j] << ")) * ";
-			    	iteration_product = iteration_product 
-					* (ip_x - x[j])/(x[i] - x[j]);
+			    	p = p* (xp - x[j])/(x[i] - x[j]);
 			   }
 		  }
-		  cout << y[i] << ") \n";
-		  ip_y = ip_y + iteration_product * y[i];
+		  yp = yp + p * y[i];
 	 }
-	 cout<< endl<<"Interpolated value at "<< ip_x<< " is "<< ip_y << endl;
+	 cout<< endl<<"Interpolated value at "<< xp<< " is "<< yp;
 
 	 return 0;
 }
