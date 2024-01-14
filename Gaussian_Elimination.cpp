@@ -1,80 +1,77 @@
+/*
+Program: Gauss Elimination Method
+All array indexes are assumed to start from 1
+*/
 
-#include <iostream>
-#include <vector>
+#include<iostream>
+#include<iomanip>
+#include<math.h>
+#include<stdlib.h>
+
+#define   SIZE   10
 
 using namespace std;
 
-// Function to perform Naïve Gauss elimination
-void gaussElimination(vector<vector<double>> &matrix)
-{
-    int n = matrix.size();
-
-    // Forward elimination
-    for (int i = 0; i < n - 1; ++i)
-    {
-        for (int k = i + 1; k < n; ++k)
-        {
-            double factor = matrix[k][i] / matrix[i][i];
-            for (int j = i; j <= n; ++j)
-            {
-                matrix[k][j] -= factor * matrix[i][j];
-            }
-        }
-    }
-
-    // Back substitution
-    for (int i = n - 1; i >= 0; --i)
-    {
-        matrix[i][n] /= matrix[i][i];
-        matrix[i][i] = 1;
-
-        for (int k = i - 1; k >= 0; --k)
-        {
-            matrix[k][n] -= matrix[k][i] * matrix[i][n];
-            matrix[k][i] = 0;
-        }
-    }
-}
-
 int main()
 {
-    // Velocity vs. time data
-    vector<double> time = {5, 8, 12};
-    vector<double> velocity = {106.8, 177.2, 279.2};
+	 float a[SIZE][SIZE], x[SIZE], ratio;
+	 int i,j,k,n;
 
-    // Number of data points
-    int n = time.size();
+     /* Setting precision and writing floating point values in fixed-point notation. */
+     cout<< setprecision(3)<< fixed;
 
-    // Matrix to store the coefficients
-    vector<vector<double>> matrix(n, vector<double>(n + 1, 0.0));
+	 /* Inputs */
+	 /* 1. Reading number of unknowns */
+	 cout<<"Enter number of unknowns: ";
+	 cin>>n;
 
-    // Populate the matrix
-    for (int i = 0; i < n; ++i)
-    {
-        matrix[i][0] = time[i] * time[i];   // a1*t^2
-        matrix[i][1] = time[i];             // a2*t
-        matrix[i][2] = 1;                    // a3
-        matrix[i][n] = velocity[i];          // Velocity values
-    }
+	 /* 2. Reading Augmented Matrix */
+	 cout<<"Enter Coefficients of Augmented Matrix: "<< endl;
+	 for(i=1;i<=n;i++)
+	 {
+		  for(j=1;j<=n+1;j++)
+		  {
+			   cout<<"a["<< i<<"]"<< j<<"]= ";
+			   cin>>a[i][j];
+		  }
+	 }
+	/* Applying Gauss Elimination */
+	 for(i=1;i<=n-1;i++)
+	 {
+		  if(a[i][i] == 0.0)
+		  {
+			   cout<<"Mathematical Error!";
+			   exit(0);
+		  }
+		  for(j=i+1;j<=n;j++)
+		  {
+			   ratio = a[j][i]/a[i][i];
 
-    // Apply Gauss elimination
-    gaussElimination(matrix);
+			   for(k=1;k<=n+1;k++)
+			   {
+			  		a[j][k] = a[j][k] - ratio*a[i][k];
+			   }
+		  }
+	 }
+	 /* Obtaining Solution by Back Substitution Method */
+	 x[n] = a[n][n+1]/a[n][n];
 
-    // Print the coefficients
-    cout << "Coefficients: "<<endl;
-    for (int i = 0; i < n; ++i)
-    {
-        cout << "a"<<i+1<<" = "<<matrix[i][n] << endl;
-    }
+	 for(i=n-1;i>=1;i--)
+	 {
+		  x[i] = a[i][n+1];
+		  for(j=i+1;j<=n;j++)
+		  {
+		  		x[i] = x[i] - a[i][j]*x[j];
+		  }
+		  x[i] = x[i]/a[i][i];
+	 }
 
-    cout << endl;
+	 /* Displaying Solution */
+	 cout<< endl<<"Solution: "<< endl;
+	 for(i=1;i<=n;i++)
+	 {
+	  	cout<<"x["<< i<<"] = "<< x[i]<< endl;
+	 }
 
-    // Calculate velocity at t = 6 seconds
-    double t = 6;
-    double result = matrix[0][n] * t * t + matrix[1][n] * t + matrix[2][n];
-
-    // Print the result
-    cout << "Velocity at t = 6 seconds: " << result << " m/s" << endl;
-
-    return 0;
+	 return(0);
 }
